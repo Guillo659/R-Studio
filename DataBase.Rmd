@@ -1,0 +1,242 @@
+---
+title: "DataBase"
+author: "Guillermo Salgado"
+date: "2022-11-16"
+output: 
+  html_document:
+    toc: yes
+long: es-ES
+---
+
+[Guillo\`s Blog](https://guysystem86.blogspot.com)
+
+# Serie de Tiempo.
+
+## Grafica.
+
+**Comenzamos graficando.**
+
+```{r echo=FALSE}
+set.seed(198)
+BTC <- read.csv("BTCUSD240.csv", header = F)
+BTC <- BTC[,c(6)]
+BTC <- ts(BTC)
+plot(BTC)
+```
+
+### Prueba estacionaria.
+
+**Verificamos si es estacionaria.**
+
+```{r echo=FALSE}
+library(tseries)
+library(parsedate)
+require(tseries)
+adf.test(BTC, alternative = "stationary")
+```
+
+## Polimorfismo de variable.
+
+**Transformacion de la variable por logaritmo.**
+
+```{r echo=FALSE}
+BTClog <- log(BTC)
+plot(BTClog)
+```
+
+### Prueba estacionaría.
+
+**Verificamos su estacionaridad de nuevo.**
+
+```{r echo=FALSE}
+adf.test(BTClog, alternative = "stationary")
+```
+
+## Test con las diferencias.
+
+**Probando las diferencias.**
+
+```{r echo=FALSE}
+BTCdiff <- diff(BTC)
+plot(BTCdiff)
+```
+
+### Verificación estacionaría.
+
+**Volvemos a probar estacionalidad.**
+
+```{r echo=FALSE}
+adf.test(BTCdiff, alternative = "stationary")
+```
+
+# Funciones de auto-correlación y auto-correlación parcial.
+
+## Función acf.
+
+```{r echo=FALSE}
+acf(BTCdiff)
+```
+
+## Función pacf.
+
+```{r echo=FALSE}
+pacf(BTCdiff)
+```
+
+# Modelos ARIMA.
+
+## Ajustes al modelo ARIMA 1.
+
+### Función afc.
+
+```{r echo=FALSE}
+acf(ts(BTCdiff, frequency = 1))
+```
+
+### Función pacf.
+
+```{r echo=FALSE}
+pacf(ts(BTCdiff, frequency = 1))
+```
+
+## Creación del modelo 1.
+
+**Se crea el modelo con 1 diferencia, 1 auto regreso, 1 media moivl.**
+
+```{r echo=FALSE}
+modelo1 <- arima(BTC,order = c(1,1,1))
+modelo1
+```
+
+### Diagnostico.
+
+```{r echo=FALSE}
+tsdiag(modelo1)
+```
+
+### Prueba de ruido blanco.
+
+```{r echo=FALSE}
+Box.test(residuals(modelo1),type = "Ljung-Box")
+```
+
+### Error con media cero.
+
+```{r echo=FALSE}
+error <- residuals(modelo1)
+plot(error)
+```
+
+### Pronosticos.
+
+```{r echo=FALSE}
+library("forecast")
+pronostico <- forecast::forecast(modelo1,h=48)
+pronostico
+```
+
+```{r echo=FALSE}
+plot(pronostico)
+```
+
+## Ajustes al modelo ARIMA 2.
+
+### Función afc.
+
+```{r echo=FALSE}
+acf(ts(BTCdiff, frequency = 2))
+```
+
+### Función pacf.
+
+```{r echo=FALSE}
+pacf(ts(BTCdiff, frequency = 2))
+```
+
+## Creación del modelo 2
+
+```{r echo=FALSE}
+modelo2 <- arima(BTC,order = c(2,2,2))
+modelo2
+```
+
+### Diagnostico
+
+```{r echo=FALSE}
+tsdiag(modelo2)
+```
+
+### Prueba de ruido blanco
+
+```{r echo=FALSE}
+Box.test(residuals(modelo2),type = "Ljung-Box")
+```
+
+### Error con media cero
+
+```{r echo=FALSE}
+error2 <- residuals(modelo2)
+plot(error2)
+```
+
+### Pronosticos
+
+```{r echo=FALSE}
+pronostico2 <- forecast::forecast(modelo2,h=48)
+pronostico2
+```
+
+```{r echo=FALSE}
+plot(pronostico2)
+```
+
+## Ajustes al modelo ARIMA 3.
+
+### Función afc.
+
+```{r echo=FALSE}
+acf(ts(BTCdiff, frequency = 3))
+```
+
+### Función pacf.
+
+```{r echo=FALSE}
+pacf(ts(BTCdiff, frequency = 3))
+```
+
+## Creación del modelo 3
+
+```{r echo=FALSE}
+modelo3 <- arima(BTC,order = c(3,3,3))
+modelo3
+```
+
+### Diagnostico
+
+```{r echo=FALSE}
+tsdiag(modelo3)
+```
+
+### Prueba de ruido blanco
+
+```{r echo=FALSE}
+Box.test(residuals(modelo3),type = "Ljung-Box")
+```
+
+### Error con media cero
+
+```{r echo=FALSE}
+error3 <- residuals(modelo3)
+plot(error3)
+```
+
+### Pronosticos
+
+```{r echo=FALSE}
+pronostico3 <- forecast::forecast(modelo3,h=48)
+pronostico3
+```
+
+```{r echo=FALSE}
+plot(pronostico3)
+```
