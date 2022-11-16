@@ -9,9 +9,9 @@ Manejo de errores:
 -Se usaron algunas dependemcias que deben ser descargadas para poder que el archivo corra correctamente.
 
 Descargar las librerias: 
-- tseries -
-- parsedate -
-- forecast -
+- tseries 
+- parsedate 
+- forecast 
 
 La base de datos o el documento csv debe estar junto al documento html y al documento Rmd.
 
